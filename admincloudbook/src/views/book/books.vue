@@ -1,5 +1,16 @@
 <template>
   <div class="container">
+    <div class="select">
+      <el-button type="primary">添加新书<i class="el-icon-upload el-icon--right"></i></el-button>
+      <el-select v-model="selectType" clearable placeholder="请选择" @change='select'>
+        <el-option
+          v-for="item in bookClassify"
+          :key="item.value"
+          :label="item.title"
+          :value="item._id">
+        </el-option>
+      </el-select>
+    </div>
     <div class="bookcontent" v-for="item in bookData">
       <div class="top">
         <div class="left"><img :src="item.img " alt=""></div>
@@ -53,13 +64,14 @@
         bookData: [],
         focusbook:{},
         centerDialogVisible:false,
-        bookClassify:[]
+        bookClassify:[],
+        selectType:''
       }
     },
     methods: {
       // 获取分类
       getClassify(){
-        this.$axios.get('/category?pn=1&size=10').then(res => {
+        this.$axios.get(`/category?pn=1&size=10`).then(res => {
           if (res.code == 200) {
             console.log(res.data)
             this.bookClassify = res.data
@@ -72,10 +84,21 @@
       },
       // 获取所有书籍
       getbookData() {
-        this.$axios.get('/book').then(res => {
+        let url='/book?pn=1&size=100'
+        if(this.selectType){
+          url=`/category/${this.selectType}/books?pn=1&size=100`
+        }
+        this.$axios.get(`${url}`).then(res => {
           if (res.code == 200) {
             console.log(res.data)
-            this.bookData = res.data
+            if(this.selectType){
+              this.bookData = res.data.books
+              if(!res.data.books.length){
+                this.$message.error('该分类暂无数据');
+              }
+            }else {
+              this.bookData = res.data
+            }
             console.log(this.bookData)
           }
           else {
@@ -98,7 +121,6 @@
         this.centerDialogVisible=true
       },
       update(){
-
         if(this.focusbook.typetitle.substring(0,4)=='(默认)'){
         }
         else {
@@ -117,9 +139,17 @@
           }
           this.centerDialogVisible=false
         })
+      },
+      // 选择分类功能
+      select(){
+        this.getbookData()
+        this.getClassify()
       }
     },
     created() {
+      if(this.$route.query.selected){
+        this.selectType=this.$route.query.selected
+      }
       this.getbookData()
       this.getClassify()
     }
@@ -127,6 +157,10 @@
 </script>
 
 <style scoped lang="scss">
+  .select{
+    margin-top: 20px;
+    margin-left: -200px;
+  }
   .bookcontent {
     margin: 15px;
     width: 300px;

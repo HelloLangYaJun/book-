@@ -35,7 +35,6 @@
       Login() {
         this.isloading = true
         console.log(this.formData)
-
         this.$axios.get('/user').then(res => {
           if (res.code == 200) {
             this.UserInfo = res.data
@@ -47,7 +46,9 @@
                 message: '登陆成功',
                 type: 'success'
               });
-              this.getUser(res.data)
+
+              sessionStorage.setItem('LoginUser',JSON.stringify(res.data))
+              this.$router.push('/layout/users')
             }
             else {
               this.$message.error('登陆失败');
@@ -57,31 +58,9 @@
         })
 
       },
-      getUser(login) {
-        this.$axios.get('/user').then(res => {
-          if (res.code == 200) {
-            let flag='flag'
-            console.log(res.data)
-            this.UserInfo.forEach(item2=>{
-              item2[flag]==true
-              res.data.forEach(item => {
-                if(item2==item){
-                  item2[flag]==flase
-                }
-              })
-              if(item2[flag]==true){
-                console.log('ok')
-                Vue.prototype.loginUser = item2
-              }
-            })
-            this.$router.push('/layout/users')
-          }
-          else {
-            this.$message.error('登录状态失效');
-            this.$router.push('/')
-          }
-        })
-      },
+    },
+    created(){
+
     }
 
   }
