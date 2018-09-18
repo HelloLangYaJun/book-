@@ -161,7 +161,7 @@
   .title {
     margin-left: 200px;
     line-height: 60px;
-    height: 60px;
+    height: 70px;
     border-bottom: 1px solid #e1e1e1;
   }
 .avatar{
@@ -189,6 +189,7 @@
       img {
         width: 60px;
         height: 60px;
+        border-radius: 50%;
       }
       .el-dropdown {
         width: 100%;
