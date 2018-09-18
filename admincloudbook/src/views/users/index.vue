@@ -119,13 +119,13 @@
     methods: {
       getData() {
         console.log('1')
-        this.$axios.get('/user').then(res => {
-          if (res.code == 200) {
+        this.$axios.get('/user').then(res =>{
+          if (res.code == 200){
             this.tableData = res.data
             this.Pagecount = res.count
             console.log(this.Pagecount)
           }
-          else {
+          else{
             this.$message.error('登录状态失效');
             this.$router.push('/')
           }
@@ -172,8 +172,9 @@
         console.log(index, row);
       },
       handleDelete(index, row) {
-        this.deleteid = row._id
-        this.dialogVisible = true
+        this.$message.error('已被禁用');
+        // this.deleteid = row._id
+        // this.dialogVisible = true
       },
       Delete() {
         this.$axios.post('/user/delete', {userIds: [this.deleteid]}).then(res => {
@@ -223,7 +224,7 @@
     },
     created() {
       this.getData()
-      axios.get('http://upload.yaojunrong.com/getToken').then(res => {
+       axios.get('http://upload.yaojunrong.com/getToken').then(res => {
         this.ToKen = res.data.data
       })
     },

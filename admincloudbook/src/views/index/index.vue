@@ -227,9 +227,9 @@
     z-index: 1;
     /*background-image:url(https://openclipart.org/image/2400px/svg_to_png/250847/Trees-Landscape-Silhouette.png);
     */
-    background-image: url('http://www.jq22.com/css/img/xkbg.png');
-    background-size: 1000px 250px;
-    background-repeat: repeat-x;
-    background-position: center bottom;
+    background-image: url('../../assets/moon.png');
+    background-size: 250px 250px;
+    background-repeat: no-repeat;
+    background-position: left top;
   }
 </style>

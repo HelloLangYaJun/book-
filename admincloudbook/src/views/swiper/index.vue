@@ -42,15 +42,26 @@
             <el-button
               size="mini"
               type="danger"
-              @click="handleDelete(scope.$index, scope.row)">删除
+              @click="openhandleDelete(scope.$index, scope.row)">删除
             </el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogVisible"
+      width="30%">
+      <span>确定删除{{ ofcuseSwiper.title}}这个轮播图?删除后不可恢复！</span>
+      <span slot="footer" class="dialog-footer">
+    <el-button @click="dialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="delSwiper">确 定</el-button>
+  </span>
+    </el-dialog>
     <div class="xinjian">
       <el-button @click="openSwiper" type="primary" class="btn">新建轮播图</el-button>
     </div>
+    <!--....................................删除分类........................................-->
     <!--................................新建轮播图.....................................-->
     <el-dialog
       title="新建"
@@ -136,7 +147,9 @@
         ofcuseSwiper: {},
         ToKen:{},
         centerDialogVisible: false,
-        centerDialogVisibleadd:false
+        centerDialogVisibleadd:false,
+        dialogVisible:false,
+
       }
     },
     methods: {
@@ -148,6 +161,25 @@
           }
           else {
 
+          }
+        })
+      },
+      //删除轮播图
+      openhandleDelete(index,row){
+        this.ofcuseSwiper=row
+        this.dialogVisible=true
+      },
+      delSwiper(){
+        console.log(this.ofcuseSwiper)
+        this.$axios.post('/swiper/delete',{ids:[this.ofcuseSwiper._id]}).then(res => {
+          if (res.code == 200) {
+            this.getSwiper()
+            this.dialogVisible=false
+            this.$message.success('删除成功');
+          }
+          else {
+            this.$message.error('登录状态失效');
+            this.$router.push('/')
           }
         })
       },
@@ -204,9 +236,7 @@
         this.imageUrl=''
         this.centerDialogVisible=true
       },
-      handleDelete(){
-        this.$message.error('暂时没有这个接口功能哦');
-      },
+
       upload(){
         let flag=0;
         for(var item in this.ofcuseSwiper){
@@ -215,7 +245,7 @@
           }
           console.log(flag)
         }
-        if(flag==6){
+        if(flag==7){
           if(this.imageUrl){
             this.ofcuseSwiper.img=this.newimg
           }
@@ -223,6 +253,7 @@
           this.ofcuseSwiper.book=this.ofcuseSwiper.book._id
           this.$axios.put(`/swiper/${this.ofcuseSwiper._id}`,this.ofcuseSwiper).then(res=>{
             if (res.code==200){
+              this.$message.success('修改成功');
               this.centerDialogVisible = false
               this.getSwiper()
             }

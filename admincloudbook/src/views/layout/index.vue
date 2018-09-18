@@ -15,7 +15,6 @@
               <p @click="centerDialogVisible2 = true">
                 <el-dropdown-item  >修改个人信息</el-dropdown-item>
               </p>
-
             </el-dropdown-menu>
           </el-dropdown>
         </el-col>

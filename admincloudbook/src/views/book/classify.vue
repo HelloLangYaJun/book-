@@ -39,10 +39,26 @@
             size="mini"
             @click="openupdate(scope.row.title,scope.row.icon,scope.row.index,scope.row._id)">编辑
           </el-button>
+          <el-button
+            size="mini"
+            @click="opendel(scope.row._id)">删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
     <!-- -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;内容显示-->
+    <!--.................................删除分类......................................-->
+    <el-dialog
+      title="删除"
+      :visible.sync="centerDialogVisible3"
+      width="40%"
+      center>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="centerDialogVisible3 = false">取 消</el-button>
+        <el-button type="primary" @click="delclasscify">确 定</el-button>
+     </span>
+    </el-dialog>
+    <!--.................................删除分类......................................-->
     <!-- -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;修改弹出层-->
     <el-dialog
       title="修改"
@@ -102,12 +118,15 @@
         tableData: [],
         centerDialogVisible: false,
         centerDialogVisible2: false,
-        newClasscify: {}
+        centerDialogVisible3:false,
+        newClasscify: {},
+        visible2:false,
+        delid:''
       }
     },
     methods: {
-      getData() {
-        this.$axios.get('/category?pn=1&size=10').then(res => {
+      getData(){
+        this.$axios.get('/category?pn1&size=100').then(res =>{
           if (res.code == 200) {
             this.tableData = res.data
           }
@@ -120,6 +139,25 @@
       openupdate(title, icon, index, id) {
         this.formData = {title, icon, index, id}
         this.centerDialogVisible = true
+      },
+      opendel(id){
+        this.delid=''
+        this.delid=id
+        this.centerDialogVisible3=true;
+      },
+      delclasscify(){
+        this.$axios.delete(`/category/${this.delid}`).then(res => {
+          if (res.code == 200) {
+            this.$message.success('删除成功');
+            this.centerDialogVisible3=false;
+            this.delid=''
+            this.getData()
+          }
+          else {
+            this.$message.error('登录状态失效');
+            this.$router.push('/')
+          }
+        })
       },
       update() {
         this.$axios.put(`/category/${this.formData.id}`, this.formData).then(res => {
@@ -143,7 +181,7 @@
       openAddClasscify() {
         this.centerDialogVisible2=true
       },
-      AddClasscify() {
+      AddClasscify(){
         let flag=0;
         for(var item in this.newClasscify){
           if(item){
@@ -167,7 +205,6 @@
         else{
           this.$message.error('请将信息填写完整');
         }
-
       },
     },
     created() {
